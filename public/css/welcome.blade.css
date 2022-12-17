@@ -1,0 +1,85 @@
+*{
+    font-family: 'Montserrat', sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    background: linear-gradient( rgba(0, 0, 0, 0.69) 100%, rgba(0, 0, 0, 0.69) 100%), url("images/image-1.jpeg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.header{
+    padding: 1%;
+    text-align: right;
+    font-size: 1rem;
+}
+
+.header a{
+    text-decoration: none;
+    color: white;
+    margin-left: 1%;
+}
+
+.introduction-block{
+    font-size: 1.8rem;
+    margin-top: 17%;
+    color: white;
+    display: flex;
+    align-itrems: center;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+.introduction-block .introduction-block-inside h1:first-of-type{
+    margin: 0px;
+    border-bottom: 3px solid #326565;
+}
+
+.introduction-block .introduction-block-inside h1{
+    margin-bottom: 5%;
+}
+
+.introduction-block a{
+    text-decoration: none;
+}
+
+.introduction-block-inside{
+    text-align: center;
+}
+
+.introduction-block-inside .introduction-block-first-button{
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+    border: 3px solid #326565;
+    background: rgba(1, 1, 1, 0.3);
+    text-align: center;
+    border-radius: 10px;
+    padding: 2%;
+    transition: transform .3s;
+}
+
+@media only screen and (max-width: 900px) {
+    .introduction-block{
+        font-size: 1.8rem;
+        margin-top:40%;
+        color: white;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .introduction-block{
+        font-size: 1rem;
+        margin-top:50%;
+        color: white;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+    }
+}
