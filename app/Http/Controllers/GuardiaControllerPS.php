@@ -16,18 +16,6 @@ use Illuminate\Support\Facades\DB;
  * @package App\Http\Controllers
  */
 
-function calculaedad($fecha_nacimiento, $diaActual){
-    $cumpleanos = new DateTime($fecha_nacimiento);
-    $hoy = Carbon::parse($diaActual);
-    $annos= $hoy->diff($cumpleanos);
-    return ($annos->y);
-}
-
-function fechadentrodeotra(DateTime $fechaActual, DateTime $fechaInicio, DateTime $fechaFinal){
-    return ($fechaActual >= $fechaInicio and $fechaActual <= $fechaFinal);
-}
-
-
 
 
 class GuardiaControllerPS extends Controller
@@ -44,8 +32,21 @@ class GuardiaControllerPS extends Controller
      * - SI ESTÁ DE VACACIONES NO HACE GUARDIAS
      * - HACE GUARDIAS EN FUNCIÓN DEL PORCENTAJE DE TRABAJO EFECTIVO APLICADO (JORNADA)
      * */
+
+
+    public function calculaedad($fecha_nacimiento, $diaActual){
+        $cumpleanos = new DateTime($fecha_nacimiento);
+        $hoy = Carbon::parse($diaActual);
+        $annos= $hoy->diff($cumpleanos);
+        return ($annos->y);
+    }
+
+    public function fechadentrodeotra(DateTime $fechaActual, DateTime $fechaInicio, DateTime $fechaFinal){
+        return ($fechaActual >= $fechaInicio and $fechaActual <= $fechaFinal);
+    }
+
     public function guardias(){
-        
+
         if(
             Carbon::now()->month != 1
             and Carbon::now()->month != 2
@@ -57,7 +58,7 @@ class GuardiaControllerPS extends Controller
             $primerDia = Carbon::parse(date('Y') . '-02-01')->addYear();
             $ultimoDia = Carbon::parse(date('Y') . '-06-30')->addYear();
             $diferencia = $primerDia->diffInDays($ultimoDia);
-            
+
         }else{
             $primerDia = Carbon::parse(date('Y') . '-02-01');
             $ultimoDia = Carbon::parse(date('Y') . '-06-30');
@@ -729,7 +730,7 @@ class GuardiaControllerPS extends Controller
                                         $candidatoMaternoAntesSabados = $candidatoMaterno;
                                         $candidatoInsularAntesSabados = $candidatoInsular;
                                         $candidatoRefuerzoAntesSabados = $candidatoRefuerzo;
-                
+
                                     }
 
 
@@ -787,7 +788,7 @@ class GuardiaControllerPS extends Controller
                                     $candidatoMaternoAntesSabados = $candidatoMaterno;
                                     $candidatoInsularAntesSabados = $candidatoInsular;
                                     $candidatoRefuerzoAntesSabados = $candidatoRefuerzo;
-            
+
                                 }
 
 
@@ -826,7 +827,7 @@ class GuardiaControllerPS extends Controller
                                     $candidatoMaternoAntesSabados = $candidatoMaterno;
                                     $candidatoInsularAntesSabados = $candidatoInsular;
                                     $candidatoRefuerzoAntesSabados = $candidatoRefuerzo;
-            
+
                                 }
 
                             }
@@ -1473,7 +1474,7 @@ class GuardiaControllerPS extends Controller
                                         $candidatoMaternoAntesSabados = $candidatoMaterno;
                                         $candidatoInsularAntesSabados = $candidatoInsular;
                                         $candidatoRefuerzoAntesSabados = $candidatoRefuerzo;
-                
+
                                     }
 
 
@@ -1554,7 +1555,7 @@ class GuardiaControllerPS extends Controller
                                         $candidatoMaternoAntesSabados = $candidatoMaterno;
                                         $candidatoInsularAntesSabados = $candidatoInsular;
                                         $candidatoRefuerzoAntesSabados = $candidatoRefuerzo;
-                
+
                                     }
 
 
@@ -1611,7 +1612,7 @@ class GuardiaControllerPS extends Controller
                                     $candidatoMaternoAntesSabados = $candidatoMaterno;
                                     $candidatoInsularAntesSabados = $candidatoInsular;
                                     $candidatoRefuerzoAntesSabados = $candidatoRefuerzo;
-            
+
                                 }
 
                             }
@@ -1649,7 +1650,7 @@ class GuardiaControllerPS extends Controller
                                     $candidatoMaternoAntesSabados = $candidatoMaterno;
                                     $candidatoInsularAntesSabados = $candidatoInsular;
                                     $candidatoRefuerzoAntesSabados = $candidatoRefuerzo;
-            
+
                                 }
 
                             }
@@ -1669,7 +1670,7 @@ class GuardiaControllerPS extends Controller
                     $posiciones = array_keys($candidatosEnFuncionDias, $candidatoRefuerzo);
                     unset($candidatosEnFuncionDias[$posiciones[0]]);
 
-                    
+
 
                     DB::table('guardias')->insert([
                         'fecha' => Carbon::parse(date('Y') . '-02-01')->addDays($i)->toDateString(),

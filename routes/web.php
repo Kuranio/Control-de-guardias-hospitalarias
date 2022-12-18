@@ -3,6 +3,7 @@
 use App\Http\Controllers\ChangePasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\GuardiaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,7 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('generar.guardiasPS',[App\Http\Controllers\GuardiaControllerPS::class,'guardias'])->name('generar.guardiasPS');
     Route::get('generar.guardiasSS',[App\Http\Controllers\GuardiaControllerSS::class,'guardias'])->name('generar.guardiasSS');
     Route::get('guardias.truncate', [App\Http\Controllers\GuardiaControllerPS::class,'truncate'])->name('guardias.truncate');
+    Route::get('prueba/{semestre}', [ GuardiaController::class, 'generateGuardia' ]);
 });
 Route::get('/logout', function(){
     Auth::logout();

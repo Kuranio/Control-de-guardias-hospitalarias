@@ -41,5 +41,31 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['nombre','apellidos','fechadenacimiento','vacaciones1','vacaciones2','vacaciones3','vacaciones4','vacaciones5','vacaciones6','vacaciones7','vacaciones8','vacaciones9','vacaciones10','jornada','dni','seccion','password','contraseña','is_admin','haceGuardias','jornada'];
+    protected $fillable = [
+        'nombre',
+        'apellidos',
+        'fechadenacimiento',
+        'vacaciones1',
+        'vacaciones2',
+        'vacaciones3',
+        'vacaciones4',
+        'vacaciones5',
+        'vacaciones6',
+        'vacaciones7',
+        'vacaciones8',
+        'vacaciones9',
+        'vacaciones10',
+        'jornada',
+        'dni',
+        'seccion',
+        'password',
+        'contraseña',
+        'is_admin',
+        'haceGuardias',
+        'jornada'
+    ];
+
+    protected $casts = [
+      'fechadenacimiento' => 'date'
+    ];
 }

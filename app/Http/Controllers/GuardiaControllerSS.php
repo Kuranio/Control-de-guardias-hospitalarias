@@ -16,18 +16,6 @@ use Illuminate\Support\Facades\DB;
  * @package App\Http\Controllers
  */
 
-function calculaedad($fecha_nacimiento, $diaActual){
-    $cumpleanos = new DateTime($fecha_nacimiento);
-    $hoy = Carbon::parse($diaActual);
-    $annos= $hoy->diff($cumpleanos);
-    return ($annos->y);
-}
-
-function fechadentrodeotra(DateTime $fechaActual, DateTime $fechaInicio, DateTime $fechaFinal){
-    return ($fechaActual >= $fechaInicio and $fechaActual <= $fechaFinal);
-}
-
-
 
 
 class GuardiaControllerSS extends Controller
@@ -44,6 +32,17 @@ class GuardiaControllerSS extends Controller
      * - SI ESTÁ DE VACACIONES NO HACE GUARDIAS
      * - HACE GUARDIAS EN FUNCIÓN DEL PORCENTAJE DE TRABAJO EFECTIVO APLICADO (JORNADA)
      * */
+
+    public function calculaedad($fecha_nacimiento, $diaActual){
+        $cumpleanos = new DateTime($fecha_nacimiento);
+        $hoy = Carbon::parse($diaActual);
+        $annos= $hoy->diff($cumpleanos);
+        return ($annos->y);
+    }
+
+    public function fechadentrodeotra(DateTime $fechaActual, DateTime $fechaInicio, DateTime $fechaFinal){
+        return ($fechaActual >= $fechaInicio and $fechaActual <= $fechaFinal);
+    }
     public function guardias(){
 
         if(Carbon::now()->month < 7){

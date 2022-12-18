@@ -153,4 +153,88 @@ class GuardiaController extends Controller
 
         return redirect()->route('guardias.index');
     }
+
+    public function generateGuardia(Request $request, $semestre) {
+        switch ( $semestre ) {
+            case 1:
+                $primerDia = Carbon::parse(date('Y') . '-02-01');
+                $ultimoDia = Carbon::parse(date('Y') . '-06-30');
+                if ( Carbon::now()->month <= 6 ){
+                    $primerDia->addYear();
+                    $ultimoDia->addYear();
+                }
+                break;
+            case 2:
+                $primerDia = Carbon::parse(date('Y') . '-07-01');
+                $ultimoDia = Carbon::parse(date('Y') . '-12-15');
+                if(Carbon::now()->month < 7){
+                    $primerDia->addYear();
+                    $ultimoDia->addYear();
+                }
+                break;
+            default:
+                abort(500);
+        }
+
+//         se añade 1 por que hay un fallo al calcular diferencias
+        $totalDias = $primerDia->diffInDays($ultimoDia) + 1;
+
+        $users = User::where( 'haceGuardias', 1 )->get()->filter(function ($user, $key) use($primerDia) {
+            return $this->calculaEdad( $user->fechadenacimiento, $primerDia ) < 55;
+        })->values();
+
+        $totalJornadas = $users->sum( 'jornada' );
+
+        $jornadaPorDia = $totalDias * 3 / $totalJornadas;
+
+        $users->map(function( $user ) use ( $jornadaPorDia ) {
+            $user['totalDias'] = (int) ceil($user->jornada * $jornadaPorDia) + 2;
+            return $user;
+        });
+
+        $dayGuardiasCollection = collect();
+
+        for ($i = 0; $i < $totalDias; $i++) {
+            $date = $primerDia->copy()->addDays( $i );
+
+            $user1 = null;
+            while(! $user1){
+                $user1 = $users->where('totalDias', '!=', 0)->random(1)->first();
+                $guardias = Guardia::where( 'fecha', $date->copy()->subDay() )->get();
+            }
+
+
+            $guardia1 = Guardia::create([
+                    'fecha' => $date->toDateString(),
+                    'dni' => $user1->dni,
+                    'donde' => 'MATERNO',
+                    'semestre' => $semestre
+                ]
+            );
+            dd($guardia1);
+
+            $guardia2 = Guardia::create([
+                    'fecha' => $date->toDateString(),
+                    'dni' => 'FESTIVO',
+                    'donde' => 'INSULAR',
+                    'semestre' => $semestre
+                ]
+            );
+
+            $guardia3 = Guardia::create([
+                    'fecha' => $date->toDateString(),
+                    'dni' => 'FESTIVO',
+                    'donde' => 'REFUERZO',
+                    'semestre' => $semestre
+                ]
+            );
+        }
+    }
+
+    private function calculaEdad($fecha_nacimiento, $diaActual){
+        $hoy = Carbon::parse($diaActual);
+        $annos= $hoy->diff($fecha_nacimiento);
+        return ($annos->y);
+    }
+
 }

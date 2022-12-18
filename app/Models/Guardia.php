@@ -33,7 +33,16 @@ class Guardia extends Model
      *
      * @var array
      */
-    protected $fillable = ['fecha','dni','donde', 'semestre'];
+    protected $fillable = [
+        'fecha',
+        'dni',
+        'donde',
+        'semestre'
+    ];
+
+    protected $casts = [
+        'fecha' => 'date'
+    ];
 
 
 
