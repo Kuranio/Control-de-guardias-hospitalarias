@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Festivo extends Model
 {
-    
+
     static $rules = [
 		'fecha' => 'required',
     ];
@@ -31,6 +31,8 @@ class Festivo extends Model
      */
     protected $fillable = ['fecha'];
 
-
+    protected $casts = [
+        'fecha' => 'date'
+    ];
 
 }

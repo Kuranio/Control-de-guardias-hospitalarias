@@ -171,7 +171,7 @@ use App\Models\User;
                                 <p style="color: black; font-size: 1.3rem; text-align: center">SI CONTINÚAS, SE CREARÁN NUEVAS GUARDIAS PARA EL PRIMER SEMESTRE <br> 📅 DEL 1 DE FEBRERO AL 30 DE JUNIO 📅 <br> Y SE ELIMINARÁN LAS YA EXISTENTES</p>
                             </div>
                             <div class="modal-footer" style="margin: 0 auto">
-                                <input type="button" class="btn btn-success" onclick="location.href='{{route('generar.guardiasPS')}}';" data-bs-dismiss="modal" value="CONTINUAR"/>
+                                <input type="button" class="btn btn-success" onclick="location.href='{{url('guardias-generate/1')}}';" data-bs-dismiss="modal" value="CONTINUAR"/>
                                 <input type="button" class="btn btn-danger"  data-bs-dismiss="modal" value="CANCELAR"/>
                             </div>
                         </div>
@@ -189,7 +189,7 @@ use App\Models\User;
                                 <p style="color: black; font-size: 1.3rem; text-align: center">SI CONTINÚAS, SE CREARÁN NUEVAS GUARDIAS PARA EL SEGUNDO SEMESTRE <br> 📅 DEL 1 DE JULIO AL 15 DE DICIEMBRE 📅 <br> Y SE ELIMINARÁN LAS YA EXISTENTES</p>
                             </div>
                             <div class="modal-footer" style="margin: 0 auto">
-                                <input type="button" class="btn btn-success" onclick="location.href='{{route('generar.guardiasSS')}}';" data-bs-dismiss="modal" value="CONTINUAR"/>
+                                <input type="button" class="btn btn-success" onclick="location.href='{{url('guardias-generate/2')}}';" data-bs-dismiss="modal" value="CONTINUAR"/>
                                 <input type="button" class="btn btn-danger"  data-bs-dismiss="modal" value="CANCELAR"/>
                             </div>
                         </div>
@@ -236,7 +236,7 @@ use App\Models\User;
                         <button class="btn btn-dark botonDistr" style="height: 36px !important;" type="button" >
                             <a href="{{route('guardias.pdf')}}"><i class="fa" style="font-family: 'Nunito', sans-serif">GENERAR PDF</i></a>
                         </button>
-                        
+
                     <HR>
                     </div>
 
@@ -246,20 +246,20 @@ use App\Models\User;
                                 <button class="btn btn-warning botonDistr" style="height: 36px !important;" type="submit">
                                     <i class="fa" style="font-family: 'Nunito', sans-serif">&#128270; BUSCAR</i>
                                 </button>
-                            
+
                             <a href="{{ route('guardias.index') }}"  style="text-decoration: none">
                                 <button class="btn btn-warning botonDistr" style="height: 36px !important;" type="button">
                                     <i class="fa" style="font-family: 'Nunito', sans-serif">&#11013; REGRESAR</i>
                                 </button>
                             </a>
-                            
+
                             <a href="{{ route('guardias.create') }}"  style="text-decoration: none" >
                                 <button class="btn btn-warning botonDistr" style="height: 36px !important;" type="button">
                                     <i class="fa" style="font-family: 'Nunito', sans-serif">&#9997; CREAR NUEVA GUARDIA</i>
                                 </button>
                             </a>
                         </form>
-                        
+
                         <HR>
                         @foreach ($guardias as $guardia)
                                 <?php
@@ -288,6 +288,7 @@ use App\Models\User;
 
 
                     <div class="card-body">
+                        COUNT: {{ $guardias->count()  }}
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <thead class="thead">

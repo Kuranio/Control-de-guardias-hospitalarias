@@ -17,7 +17,7 @@ class HandleExceptions
     /**
      * Reserved memory so that errors can be displayed properly on memory exhaustion.
      *
-     * @var string
+     * @var string|null
      */
     public static $reservedMemory;
 
@@ -102,10 +102,7 @@ class HandleExceptions
      */
     public function handleDeprecationError($message, $file, $line, $level = E_DEPRECATED)
     {
-        if (! class_exists(LogManager::class)
-            || ! static::$app->hasBeenBootstrapped()
-            || static::$app->runningUnitTests()
-        ) {
+        if ($this->shouldIgnoreDeprecationErrors()) {
             return;
         }
 
@@ -131,6 +128,18 @@ class HandleExceptions
     }
 
     /**
+     * Determine if deprecation errors should be ignored.
+     *
+     * @return bool
+     */
+    protected function shouldIgnoreDeprecationErrors()
+    {
+        return ! class_exists(LogManager::class)
+            || ! static::$app->hasBeenBootstrapped()
+            || static::$app->runningUnitTests();
+    }
+
+    /**
      * Ensure the "deprecations" logger is configured.
      *
      * @return void
@@ -144,9 +153,11 @@ class HandleExceptions
 
             $this->ensureNullLogDriverIsConfigured();
 
-            $options = $config->get('logging.deprecations');
-
-            $driver = is_array($options) ? $options['channel'] : ($options ?? 'null');
+            if (is_array($options = $config->get('logging.deprecations'))) {
+                $driver = $options['channel'] ?? 'null';
+            } else {
+                $driver = $options ?? 'null';
+            }
 
             $config->set('logging.channels.deprecations', $config->get("logging.channels.{$driver}"));
         });

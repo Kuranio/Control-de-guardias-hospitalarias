@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Festivo;
 use App\Models\Guardia;
 use App\Models\User;
 use Carbon\Carbon;
@@ -15,9 +16,6 @@ use PDF;
  * Class GuardiaController
  * @package App\Http\Controllers
  */
-
-
-
 class GuardiaController extends Controller
 {
     /**
@@ -26,20 +24,21 @@ class GuardiaController extends Controller
      * @return string
      */
 
-    public function pdf(){
+    public function pdf()
+    {
         $guardias = Guardia::paginate();
-        $pdf = PDF::loadView('guardia.pdf',['guardias'=>$guardias]);
+        $pdf = PDF::loadView('guardia.pdf', ['guardias' => $guardias]);
         return $pdf->stream();
         //return view('guardia.pdf', compact('guardias'));
     }
 
-    public function UserPDF(){
+    public function UserPDF()
+    {
         $guardias = Guardia::paginate();
-        $pdf = PDF::loadView('guardia.UserPDF',['guardias'=>$guardias]);
+        $pdf = PDF::loadView('guardia.UserPDF', ['guardias' => $guardias]);
         return $pdf->stream();
         //return view('guardia.pdf', compact('guardias'));
     }
-
 
 
     public function index(Request $request)
@@ -47,17 +46,17 @@ class GuardiaController extends Controller
 
         $guardias = Guardia::where([
             ['id', '!=', null],
-            [function ($query) use ($request){
-                if(($term = $request->term)) {
+            [function ($query) use ($request) {
+                if (($term = $request->term)) {
                     $query->Where('fecha', 'LIKE', '%' . $term . '%')->get();
                 }
-                if(($term1 = $request->term1)) {
+                if (($term1 = $request->term1)) {
                     $query->Where('dni', 'LIKE', $term1)->get();
-                    $query->orWhere('donde', 'LIKE', $term1 )->get();
+                    $query->orWhere('donde', 'LIKE', $term1)->get();
                 }
             }]
         ])
-            ->orderBy('id','asc')
+            ->orderBy('id', 'asc')
             ->paginate(5000);
 
         Paginator::useBootstrap();
@@ -81,7 +80,7 @@ class GuardiaController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -96,7 +95,7 @@ class GuardiaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -109,7 +108,7 @@ class GuardiaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -122,8 +121,8 @@ class GuardiaController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  Guardia $guardia
+     * @param \Illuminate\Http\Request $request
+     * @param Guardia $guardia
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Guardia $guardia)
@@ -155,11 +154,12 @@ class GuardiaController extends Controller
     }
 
     public function generateGuardia(Request $request, $semestre) {
-        switch ( $semestre ) {
+        Guardia::where('semestre', $semestre)->delete();
+        switch ($semestre) {
             case 1:
                 $primerDia = Carbon::parse(date('Y') . '-02-01');
                 $ultimoDia = Carbon::parse(date('Y') . '-06-30');
-                if ( Carbon::now()->month <= 6 ){
+                if (Carbon::now()->month > 6) {
                     $primerDia->addYear();
                     $ultimoDia->addYear();
                 }
@@ -167,74 +167,171 @@ class GuardiaController extends Controller
             case 2:
                 $primerDia = Carbon::parse(date('Y') . '-07-01');
                 $ultimoDia = Carbon::parse(date('Y') . '-12-15');
-                if(Carbon::now()->month < 7){
-                    $primerDia->addYear();
-                    $ultimoDia->addYear();
-                }
                 break;
             default:
                 abort(500);
         }
 
 //         se añade 1 por que hay un fallo al calcular diferencias
-        $totalDias = $primerDia->diffInDays($ultimoDia) + 1;
+        $totalGuardias = $primerDia->diffInDays($ultimoDia) + 1;
 
-        $users = User::where( 'haceGuardias', 1 )->get()->filter(function ($user, $key) use($primerDia) {
-            return $this->calculaEdad( $user->fechadenacimiento, $primerDia ) < 55;
-        })->values();
+        $users = $this->getUsersTotalGuardias($primerDia, $ultimoDia);
 
-        $totalJornadas = $users->sum( 'jornada' );
-
-        $jornadaPorDia = $totalDias * 3 / $totalJornadas;
-
-        $users->map(function( $user ) use ( $jornadaPorDia ) {
-            $user['totalDias'] = (int) ceil($user->jornada * $jornadaPorDia) + 2;
-            return $user;
-        });
-
-        $dayGuardiasCollection = collect();
-
-        for ($i = 0; $i < $totalDias; $i++) {
-            $date = $primerDia->copy()->addDays( $i );
-
-            $user1 = null;
-            while(! $user1){
-                $user1 = $users->where('totalDias', '!=', 0)->random(1)->first();
-                $guardias = Guardia::where( 'fecha', $date->copy()->subDay() )->get();
+        for ($i = 0; $i < $totalGuardias; $i++) {
+            $date = $primerDia->copy()->addDays($i);
+            $guardiasArray = [ 'MATERNO', 'INSULAR', 'REFUERZO' ];
+            if( Festivo::where('fecha', $date)->get()->count() ){
+                foreach( $guardiasArray as $guardiaType) {
+                    Guardia::create([
+                            'fecha' => $date->toDateString(),
+                            'donde' => $guardiaType,
+                            'dni' => 'FESTIVO',
+                            'semestre' => $semestre
+                        ]
+                    );
+                }
+                continue;
             }
 
 
-            $guardia1 = Guardia::create([
-                    'fecha' => $date->toDateString(),
-                    'dni' => $user1->dni,
-                    'donde' => 'MATERNO',
-                    'semestre' => $semestre
-                ]
-            );
-            dd($guardia1);
+            foreach( $guardiasArray as $guardiaType) {
+                $user = $this->getValidUser($users, $date, $guardiaType);
 
-            $guardia2 = Guardia::create([
-                    'fecha' => $date->toDateString(),
-                    'dni' => 'FESTIVO',
-                    'donde' => 'INSULAR',
-                    'semestre' => $semestre
-                ]
-            );
+                if(!$user){
+                    $users = $this->getUsersTotalGuardias($date, $ultimoDia);
+                    $user = $this->getValidUser($users, $date, $guardiaType);
+                }
 
-            $guardia3 = Guardia::create([
-                    'fecha' => $date->toDateString(),
-                    'dni' => 'FESTIVO',
-                    'donde' => 'REFUERZO',
-                    'semestre' => $semestre
-                ]
-            );
+                Guardia::create([
+                        'fecha' => $date->toDateString(),
+                        'dni' => $user->dni,
+                        'donde' => $guardiaType,
+                        'semestre' => $semestre
+                    ]
+                );
+                $positionUser = $users->search(function ($userSearched) use($user) {
+                    return $userSearched->id === $user->id;
+                });
+                $user['totalGuardias'] -= 1;
+                $users[$positionUser] = $user;
+
+            }
         }
+        return redirect(route('guardias.index'));
     }
 
-    private function calculaEdad($fecha_nacimiento, $diaActual){
+    private function getValidUser($users, $date, $guardiaType) {
+        $validUsers = $users->filter( function( $user ) use( $date, $guardiaType ) {
+
+//          dias que le queden
+            if( !$user->totalGuardias ){
+                return false;
+            }
+//          -----------------------------------------
+
+//          mirar VACACIONES
+            $holidaysRange = $this->getHolidaysRange($user);
+            foreach( $holidaysRange as $holidayRange )  {
+                $hasHolidays = $date->between($holidayRange[0], $holidayRange[1]);
+                if ( $hasHolidays ) {
+                    return false;
+                }
+            }
+//          -----------------------------------------
+
+
+//          Cumple 55 o mas
+            $edad = $this->calculaEdad($user->fechadenacimiento, $date);
+            $validEdad = $edad < 55;
+            if( ! $validEdad ) {
+                return false;
+            }
+//          -----------------------------------------
+
+
+//          guardias anteriores 24
+            $lastDay = $date->copy()->subDay();
+            if( $guardiaType === 'MATERNO' || $guardiaType === 'INSULAR' ) {
+                $lastGuardia = Guardia::where( 'fecha', $lastDay )->where( 'dni', $user->dni )->where( function( $q ) {
+                    $q->where( 'donde', 'MATERNO' )->orWhere( 'donde', 'INSULAR' );
+                })->get();
+                $cantGuardiaType = !!$lastGuardia->count();
+                if( $cantGuardiaType ) {
+                    return false;
+                }
+            }
+//          -----------------------------------------
+
+//          fin de semana lunes no tiene
+            if( $date->isMonday() ){
+                $lastGuardiasWeekend = Guardia::where( function($q) use($lastDay) {
+                    $q->where( 'fecha', $lastDay )->orWhere('fecha', $lastDay->copy()->subDay());
+                } )->where( 'dni', $user->dni )->get();
+                if( !!$lastGuardiasWeekend->count() ) {
+                    return false;
+                }
+            }
+//          -----------------------------------------
+
+
+//          Guardias especialidad diferente mismo dia
+            $dayGuardias = Guardia::where( 'fecha', $date )->get();
+            foreach( $dayGuardias as $dayGuardia ) {
+                $userGuardia = User::where( 'dni', $dayGuardia->dni)->get()->firstOrFail();
+                if($userGuardia->seccion == $user->seccion) {
+                    return false;
+                }
+            }
+
+//          -----------------------------------------
+
+
+            return true;
+        })->values();
+
+        if( ! $validUsers->count() ){
+            return false;
+        }
+
+
+        return $validUsers->sortByDesc('totalGuardias')->first();
+    }
+
+    private function calculaEdad($fecha_nacimiento, $diaActual) {
         $hoy = Carbon::parse($diaActual);
-        $annos= $hoy->diff($fecha_nacimiento);
+        $annos = $hoy->diff($fecha_nacimiento);
         return ($annos->y);
+    }
+
+    private function getHolidaysRange($user) {
+        $datesHolidays = collect();
+        for( $i = 1 ; $i <= 10 ; $i++ ){
+            if( ! $user['vacaciones'.$i] ) continue;
+            $datesHolidays->push([
+                Carbon::parse(substr($user['vacaciones'.$i], 0, 10)),
+                Carbon::parse(substr($user['vacaciones'.$i], 13, 22))
+            ]);
+        }
+        return $datesHolidays;
+    }
+
+    private function getUsersTotalGuardias($primerDia, $ultimoDia){
+        $totalGuardias = $primerDia->diffInDays($ultimoDia) + 1;
+
+        $users = User::where('haceGuardias', 1)->get()->filter(function ($user, $key) use ($primerDia) {
+            return $this->calculaEdad($user->fechadenacimiento, $primerDia) < 55;
+        })->values();
+
+        $totalJornadas = $users->sum('jornada');
+
+        $jornadaPorDia = $totalGuardias * 3 / $totalJornadas;
+
+        $users = $users->map(function ($user) use ($jornadaPorDia) {
+            $user['totalGuardias'] = (int)ceil($user->jornada * $jornadaPorDia);
+            return $user;
+        })->shuffle();
+
+        return $users;
     }
 
 }

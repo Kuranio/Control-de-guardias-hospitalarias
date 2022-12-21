@@ -97,6 +97,7 @@
 										<th>NOMBRE</th>
 										<th>APELLIDOS</th>
                                         <th>DNI</th>
+                                        <th>x</th>
                                         <th>TIPO DE USUARIO</th>
 										<th>FECHA DE NACIMIENTO</th>
 										<th>VACACIONES</th>
@@ -114,6 +115,7 @@
 											<td>{{ $user->nombre }}</td>
 											<td>{{ $user->apellidos }}</td>
                                             <td>{{ $user->dni }}</td>
+                                            <td>{{ \App\Models\Guardia::where('dni', $user->dni)->get()->count() }}</td>
                                             @if($user->is_admin == 1)
                                                 @if($user->haceGuardias == 1)
                                                     <td>ADMINISTRADOR <br> SI HACE GUARDIAS</td>
@@ -128,79 +130,79 @@
                                             @if($user->haceGuardias == 1)
                                                 <td>{{ substr(Carbon::parse($user->fechadenacimiento)->isoFormat('lll'), 0, -5)}}</td>
                                                 @if(isset($user->vacaciones10))
-                                                <td>{{substr(Carbon::create(substr($user->vacaciones1,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                    {{substr(Carbon::create(substr($user->vacaciones2,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                    {{substr(Carbon::create(substr($user->vacaciones3,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                    {{substr(Carbon::create(substr($user->vacaciones4,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                    {{substr(Carbon::create(substr($user->vacaciones5,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                    {{substr(Carbon::create(substr($user->vacaciones6,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                    {{substr(Carbon::create(substr($user->vacaciones7,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                    {{substr(Carbon::create(substr($user->vacaciones8,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                    {{substr(Carbon::create(substr($user->vacaciones9,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                    {{substr(Carbon::create(substr($user->vacaciones10,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
+                                                <td>{{substr(Carbon::create(substr($user->vacaciones1,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                    {{substr(Carbon::create(substr($user->vacaciones2,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                    {{substr(Carbon::create(substr($user->vacaciones3,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                    {{substr(Carbon::create(substr($user->vacaciones4,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                    {{substr(Carbon::create(substr($user->vacaciones5,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                    {{substr(Carbon::create(substr($user->vacaciones6,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                    {{substr(Carbon::create(substr($user->vacaciones7,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                    {{substr(Carbon::create(substr($user->vacaciones8,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                    {{substr(Carbon::create(substr($user->vacaciones9,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                    {{substr(Carbon::create(substr($user->vacaciones10,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
                                                 </td>
                                                 @elseif(isset($user->vacaciones9))
-                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones5,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones6,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones7,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones8,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones9,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
+                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones5,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones6,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones7,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones8,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones9,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
                                                     </td>
                                                 @elseif(isset($user->vacaciones5))
-                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones5,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones6,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones7,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones8,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
+                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones5,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones6,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones7,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones8,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
                                                     </td>
                                                 @elseif(isset($user->vacaciones7))
-                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones5,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones6,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones7,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
+                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones5,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones6,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones7,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
                                                     </td>
                                                 @elseif(isset($user->vacaciones6))
-                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones5,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones6,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
+                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones5,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones6,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
                                                     </td>
                                                 @elseif(isset($user->vacaciones5))
-                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones5,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
+                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones5,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
                                                     </td>
                                                 @elseif(isset($user->vacaciones4))
-                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
+                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones4,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
                                                     </td>
                                                 @elseif(isset($user->vacaciones3))
-                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
+                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones3,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
                                                     </td>
                                                 @elseif(isset($user->vacaciones2))
-                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
-                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
+                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}} <br>
+                                                        {{substr(Carbon::create(substr($user->vacaciones2,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
                                                     </td>
                                                 @elseif(isset($user->vacaciones1))
-                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,9))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
+                                                    <td>{{substr(Carbon::create(substr($user->vacaciones1,0,10))->isoFormat('lll'), 0, -14)}} | {{substr(Carbon::create(substr($user->vacaciones1,13,22))->isoFormat('lll'), 0, -14)}}
                                                     </td>
                                                 @else
                                                     <td></td>
@@ -218,7 +220,7 @@
                                             @else
                                                     <td></td>
                                             @endif
-                                            
+
 
                                             <td>
                                                 <form action="{{ route('users.destroy',$user->id) }}" method="POST">

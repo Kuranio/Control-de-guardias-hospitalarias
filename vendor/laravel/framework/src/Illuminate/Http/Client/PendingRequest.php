@@ -43,6 +43,13 @@ class PendingRequest
     protected $client;
 
     /**
+     * The Guzzle HTTP handler.
+     *
+     * @var callable
+     */
+    protected $handler;
+
+    /**
      * The base URL for the request.
      *
      * @var string
@@ -97,6 +104,13 @@ class PendingRequest
      * @var \Closure
      */
     protected $throwCallback;
+
+    /**
+     * A callback to check if an exception should be thrown when a server or client error occurs.
+     *
+     * @var \Closure
+     */
+    protected $throwIfCallback;
 
     /**
      * The number of times to try the request.
@@ -592,12 +606,17 @@ class PendingRequest
     /**
      * Throw an exception if a server or client error occurred and the given condition evaluates to true.
      *
-     * @param  bool  $condition
+     * @param  callable|bool  $condition
+     * @param  callable|null  $throwCallback
      * @return $this
      */
     public function throwIf($condition)
     {
-        return $condition ? $this->throw() : $this;
+        if (is_callable($condition)) {
+            $this->throwIfCallback = $condition;
+        }
+
+        return $condition ? $this->throw(func_get_args()[1] ?? null) : $this;
     }
 
     /**
@@ -650,7 +669,7 @@ class PendingRequest
      *
      * @param  string  $url
      * @param  array|string|null  $query
-     * @return \Illuminate\Http\Client\Response
+     * @return \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface
      */
     public function get(string $url, $query = null)
     {
@@ -664,7 +683,7 @@ class PendingRequest
      *
      * @param  string  $url
      * @param  array|string|null  $query
-     * @return \Illuminate\Http\Client\Response
+     * @return \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface
      */
     public function head(string $url, $query = null)
     {
@@ -678,7 +697,7 @@ class PendingRequest
      *
      * @param  string  $url
      * @param  array  $data
-     * @return \Illuminate\Http\Client\Response
+     * @return \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface
      */
     public function post(string $url, $data = [])
     {
@@ -692,7 +711,7 @@ class PendingRequest
      *
      * @param  string  $url
      * @param  array  $data
-     * @return \Illuminate\Http\Client\Response
+     * @return \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface
      */
     public function patch($url, $data = [])
     {
@@ -706,7 +725,7 @@ class PendingRequest
      *
      * @param  string  $url
      * @param  array  $data
-     * @return \Illuminate\Http\Client\Response
+     * @return \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface
      */
     public function put($url, $data = [])
     {
@@ -720,7 +739,7 @@ class PendingRequest
      *
      * @param  string  $url
      * @param  array  $data
-     * @return \Illuminate\Http\Client\Response
+     * @return \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface
      */
     public function delete($url, $data = [])
     {
@@ -754,7 +773,7 @@ class PendingRequest
      * @param  string  $method
      * @param  string  $url
      * @param  array  $options
-     * @return \Illuminate\Http\Client\Response
+     * @return \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface
      *
      * @throws \Exception
      */
@@ -790,7 +809,9 @@ class PendingRequest
                             throw $exception;
                         }
 
-                        if ($this->throwCallback) {
+                        if ($this->throwCallback &&
+                            ($this->throwIfCallback === null ||
+                             call_user_func($this->throwIfCallback, $response))) {
                             $response->throw($this->throwCallback);
                         }
 
@@ -966,9 +987,7 @@ class PendingRequest
      */
     public function buildClient()
     {
-        return $this->requestsReusableClient()
-               ? $this->getReusableClient()
-               : $this->createClient($this->buildHandlerStack());
+        return $this->client ?? $this->createClient($this->buildHandlerStack());
     }
 
     /**
@@ -1012,7 +1031,7 @@ class PendingRequest
      */
     public function buildHandlerStack()
     {
-        return $this->pushHandlers(HandlerStack::create());
+        return $this->pushHandlers(HandlerStack::create($this->handler));
     }
 
     /**
@@ -1278,9 +1297,7 @@ class PendingRequest
      */
     public function setHandler($handler)
     {
-        $this->client = $this->createClient(
-            $this->pushHandlers(HandlerStack::create($handler))
-        );
+        $this->handler = $handler;
 
         return $this;
     }
