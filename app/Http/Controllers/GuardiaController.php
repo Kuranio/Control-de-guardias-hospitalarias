@@ -176,11 +176,13 @@ class GuardiaController extends Controller
         $totalGuardias = $primerDia->diffInDays($ultimoDia) + 1;
 
         $users = $this->getUsersTotalGuardias($primerDia, $ultimoDia);
-
+        $festivos = Festivo::all();
         for ($i = 0; $i < $totalGuardias; $i++) {
             $date = $primerDia->copy()->addDays($i);
             $guardiasArray = [ 'MATERNO', 'INSULAR', 'REFUERZO' ];
-            if( Festivo::where('fecha', $date)->get()->count() ){
+
+
+            if( $this->checkFestivos($festivos, $date) ){
                 foreach( $guardiasArray as $guardiaType) {
                     Guardia::create([
                             'fecha' => $date->toDateString(),
@@ -332,6 +334,30 @@ class GuardiaController extends Controller
         })->shuffle();
 
         return $users;
+    }
+
+    private function checkFestivos( $festivos, Carbon $fechaAComprobar ){
+        $festivos = $festivos->pluck('fecha')->map( function( $fecha ) {
+            if(strlen($fecha) === 10){
+                return Carbon::parse(substr($fecha, 0, 10));
+            }
+            return [
+                Carbon::parse(substr($fecha, 0, 10)),
+                Carbon::parse(substr($fecha, 13, 22))
+            ];
+        });
+        foreach( $festivos as $festivo ){
+            if( gettype( $festivo ) === 'array' ) {
+                if( $fechaAComprobar->between($festivo[0], $festivo[1]) ){
+                    return true;
+                }
+                continue;
+            }
+            if( ! $fechaAComprobar->diffInDays($festivo)){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

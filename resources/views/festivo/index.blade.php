@@ -60,7 +60,7 @@ use Carbon\Carbon;
                             <table class="table table-striped table-hover">
                                 <thead class="thead">
                                     <tr>
-                                        
+
 
 										<th>FECHA</th>
 
@@ -70,17 +70,17 @@ use Carbon\Carbon;
                                 <tbody>
                                     @foreach ($festivos as $festivo)
                                         <tr>
-                                            
+
                                             @if (str_contains( $festivo->fecha , '|'))
                                             <td> DESDE EL
                                             @foreach(explode("|",$festivo->fecha) as $count => $ids)
                                             @if($count == 1) AL @endif
-                                                
-                                                {{ Carbon::parse($ids)->isoFormat('D \d\e MMMM \d\e YYYY'); }}
+
+                                                {{ Carbon::parse($ids)->isoFormat('D \d\e MMMM \d\e YYYY') }}
                                             @endforeach
                                             </td>
                                             @else
-                                            <td>{{ Carbon::parse($festivo->fecha)->isoFormat('D \d\e MMMM \d\e YYYY'); }}</td>
+                                            <td>{{ Carbon::parse($festivo->fecha)->isoFormat('D \d\e MMMM \d\e YYYY') }}</td>
                                             @endif
                                             <td>
                                                 <form action="{{ route('festivos.destroy',$festivo->id) }}" method="POST">

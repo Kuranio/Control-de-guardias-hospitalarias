@@ -89,7 +89,7 @@ class RegisterController extends Controller
             'vacaciones9' => $data['vacaciones9'],
             'vacaciones10' => $data['vacaciones10'],
             'dni' => strtoupper($data['dni']),
-            'jornada' => strtoupper($data['jornada']),
+            'jornada' => $data['jornada'],
             'seccion' => $data['seccion'],
             'is_admin' => $data['is_admin'],
             'password' => Hash::make($data['password']),

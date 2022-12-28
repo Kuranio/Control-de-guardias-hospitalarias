@@ -31,8 +31,4 @@ class Festivo extends Model
      */
     protected $fillable = ['fecha'];
 
-    protected $casts = [
-        'fecha' => 'date'
-    ];
-
 }
